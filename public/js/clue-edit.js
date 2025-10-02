@@ -27,10 +27,17 @@ const eStatus = $("#eStatus");
 const eDiff = $("#eDiff");
 const eText = $("#eText");
 
+let listenersBound = false;
+
 requireAuth(async() => {
     if (id) { await loadEditor(id); } else { resetEditor(); }
-    eSave.addEventListener('click', onSave);
-    eDelete.addEventListener('click', onDelete);
+
+    // Prevent duplicate listeners if this callback can run more than once
+    if (!listenersBound) {
+        eSave.addEventListener('click', onSave);
+        eDelete.addEventListener('click', onDelete);
+        listenersBound = true;
+    }
 });
 
 function resetEditor() {
@@ -39,7 +46,7 @@ function resetEditor() {
     eTitle.value = "";
     eArea.value = "";
     eStatus.value = "draft";
-    eDiff.value = "1";
+    eDiff.value = "1"; // default difficulty as string; parsed on save
     eText.value = "";
     eErr.textContent = "";
     eDelete.classList.add('hidden');
@@ -56,16 +63,17 @@ async function loadEditor(id) {
     const c = snap.data();
     eHeading.textContent = "Edit Clue";
     eId.value = id;
-    eTitle.value = c.title || "";
-    eArea.value = c.areaId || "";
-    eStatus.value = c.status || "draft";
-    eDiff.value = String(c.difficulty ? ? "1");
-    eText.value = c.text || "";
+    eTitle.value = c.title ? ? "";
+    eArea.value = c.areaId ? ? "";
+    eStatus.value = c.status ? ? "draft";
+    eDiff.value = String(c.difficulty ? ? 1); // <-- fixed: read, don’t assign
+    eText.value = c.text ? ? "";
     eDelete.classList.remove('hidden');
 }
 
 async function onSave() {
     eErr.textContent = "";
+
     const title = eTitle.value.trim();
     const areaId = eArea.value.trim();
     const text = eText.value.trim();
@@ -84,7 +92,7 @@ async function onSave() {
         status,
         difficulty,
         updatedAt: serverTimestamp(),
-        updatedBy: auth.currentUser ? .uid || null,
+        updatedBy: auth.currentUser ? .uid ? ? null, // safer access
     };
 
     try {
@@ -96,20 +104,26 @@ async function onSave() {
             const ref = await addDoc(collection(db, "clues"), {
                 ...payload,
                 createdAt: serverTimestamp(),
-                createdBy: auth.currentUser.uid || null
+                createdBy: auth.currentUser ? .uid ? ? null, // safer access
             });
             toast("Created");
             location.href = `clue-detail.html?id=${encodeURIComponent(ref.id)}`;
         }
     } catch (ex) {
-        eErr.textContent = ex.message ? ? "Save failed.";
+        console.error(ex);
+        eErr.textContent = "Save failed."; // <-- fixed: don’t clobber ex.message
     }
 }
 
 async function onDelete() {
     if (!eId.value) return;
     if (!confirm("Delete this clue?")) return;
-    await deleteDoc(doc(db, "clues", eId.value));
-    toast("Deleted");
-    location.href = "clues.html";
+    try {
+        await deleteDoc(doc(db, "clues", eId.value));
+        toast("Deleted");
+        location.href = "clues.html";
+    } catch (ex) {
+        console.error(ex);
+        eErr.textContent = "Delete failed.";
+    }
 }
