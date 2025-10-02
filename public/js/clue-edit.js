@@ -1,20 +1,20 @@
 // js/clue-edit.js
 import {
-    $,
-    toast,
-    requireAuth,
-    auth,
-    db,
-    collection,
-    addDoc,
-    doc,
-    getDoc,
-    updateDoc,
-    deleteDoc,
-    serverTimestamp
-} from './app.js';
+  $,
+  toast,
+  requireAuth,
+  auth,
+  db,
+  collection,
+  addDoc,
+  doc,
+  getDoc,
+  updateDoc,
+  deleteDoc,
+  serverTimestamp,
+} from "./app.js";
 
-const id = new URLSearchParams(location.search).get('id');
+const id = new URLSearchParams(location.search).get("id");
 
 const eHeading = $("#eHeading");
 const eSave = $("#eSave");
@@ -29,101 +29,105 @@ const eText = $("#eText");
 
 let listenersBound = false;
 
-requireAuth(async() => {
-    if (id) { await loadEditor(id); } else { resetEditor(); }
+requireAuth(async () => {
+  if (id) {
+    await loadEditor(id);
+  } else {
+    resetEditor();
+  }
 
-    // Prevent duplicate listeners if this callback can run more than once
-    if (!listenersBound) {
-        eSave.addEventListener('click', onSave);
-        eDelete.addEventListener('click', onDelete);
-        listenersBound = true;
-    }
+  // Prevent duplicate listeners if this callback can run more than once
+  if (!listenersBound) {
+    eSave.addEventListener("click", onSave);
+    eDelete.addEventListener("click", onDelete);
+    listenersBound = true;
+  }
 });
 
 function resetEditor() {
-    eHeading.textContent = "New Clue";
-    eId.value = "";
-    eTitle.value = "";
-    eArea.value = "";
-    eStatus.value = "draft";
-    eDiff.value = "1"; // default difficulty as string; parsed on save
-    eText.value = "";
-    eErr.textContent = "";
-    eDelete.classList.add('hidden');
+  eHeading.textContent = "New Clue";
+  eId.value = "";
+  eTitle.value = "";
+  eArea.value = "";
+  eStatus.value = "draft";
+  eDiff.value = "1"; // default difficulty as string; parsed on save
+  eText.value = "";
+  eErr.textContent = "";
+  eDelete.classList.add("hidden");
 }
 
 async function loadEditor(id) {
-    resetEditor();
-    const snap = await getDoc(doc(db, "clues", id));
-    if (!snap.exists()) {
-        toast("Not found");
-        location.href = "clues.html";
-        return;
-    }
-    const c = snap.data();
-    eHeading.textContent = "Edit Clue";
-    eId.value = id;
-    eTitle.value = c.title ? ? "";
-    eArea.value = c.areaId ? ? "";
-    eStatus.value = c.status ? ? "draft";
-    eDiff.value = String(c.difficulty ? ? 1); // <-- fixed: read, don’t assign
-    eText.value = c.text ? ? "";
-    eDelete.classList.remove('hidden');
+  resetEditor();
+  const snap = await getDoc(doc(db, "clues", id));
+  if (!snap.exists()) {
+    toast("Not found");
+    location.href = "clues.html";
+    return;
+  }
+  const c = snap.data();
+  eHeading.textContent = "Edit Clue";
+  eId.value = id;
+  eTitle.value = c.title ?? "";
+  eArea.value = c.areaId ?? "";
+  eStatus.value = c.statusx ?? "draft";
+  eDiff.value = String(c.difficulty ?? 1); // <-- fixed: read, don’t assign
+  eText.value = c.text ?? "";
+  eDelete.classList.remove("hidden");
 }
 
 async function onSave() {
-    eErr.textContent = "";
+  eErr.textContent = "";
 
-    const title = eTitle.value.trim();
-    const areaId = eArea.value.trim();
-    const text = eText.value.trim();
-    const status = eStatus.value;
-    const difficulty = Number(eDiff.value);
+  const title = eTitle.value.trim();
+  const areaId = eArea.value.trim();
+  const text = eText.value.trim();
+  const status = eStatus.value;
+  const difficulty = Number(eDiff.value);
 
-    if (!title || !areaId || !text) {
-        eErr.textContent = "Please fill all required fields.";
-        return;
+  if (!title || !areaId || !text) {
+    eErr.textContent = "Please fill all required fields.";
+    return;
+  }
+
+  const payload = {
+    title,
+    areaId,
+    text,
+    status,
+    difficulty,
+    updatedAt: serverTimestamp(),
+    updatedBy: auth.currentUser?.uid ?? null, // safer access
+  };
+
+  try {
+    if (eId.value) {
+      await updateDoc(doc(db, "clues", eId.value), payload);
+      toast("Saved");
+      location.href = `clue-detail.html?id=${encodeURIComponent(eId.value)}`;
+    } else {
+      const ref = await addDoc(collection(db, "clues"), {
+        ...payload,
+        createdAt: serverTimestamp(),
+        createdBy: auth.currentUser?.uid ?? null, // safer access
+      });
+      toast("Created");
+      location.href = `clue-detail.html?id=${encodeURIComponent(ref.id)}`;
     }
-
-    const payload = {
-        title,
-        areaId,
-        text,
-        status,
-        difficulty,
-        updatedAt: serverTimestamp(),
-        updatedBy: auth.currentUser ? .uid ? ? null, // safer access
-    };
-
-    try {
-        if (eId.value) {
-            await updateDoc(doc(db, "clues", eId.value), payload);
-            toast("Saved");
-            location.href = `clue-detail.html?id=${encodeURIComponent(eId.value)}`;
-        } else {
-            const ref = await addDoc(collection(db, "clues"), {
-                ...payload,
-                createdAt: serverTimestamp(),
-                createdBy: auth.currentUser ? .uid ? ? null, // safer access
-            });
-            toast("Created");
-            location.href = `clue-detail.html?id=${encodeURIComponent(ref.id)}`;
-        }
-    } catch (ex) {
-        console.error(ex);
-        eErr.textContent = "Save failed."; // <-- fixed: don’t clobber ex.message
-    }
+  } catch (ex) {
+    console.error(ex);
+    eErr.textContent = "Save failed."; // <-- fixed: don’t clobber ex.message
+  }
 }
 
 async function onDelete() {
-    if (!eId.value) return;
-    if (!confirm("Delete this clue?")) return;
-    try {
-        await deleteDoc(doc(db, "clues", eId.value));
-        toast("Deleted");
-        location.href = "clues.html";
-    } catch (ex) {
-        console.error(ex);
-        eErr.textContent = "Delete failed.";
-    }
+  if (!eId.value) return;
+  if (!confirm("Delete this clue?")) return;
+  try {
+    await deleteDoc(doc(db, "clues", eId.value));
+    toast("Deleted");
+    location.href = "clues.html";
+  } catch (ex) {
+    console.error(ex);
+    eErr.textContent = "Delete failed.";
+  }
 }
