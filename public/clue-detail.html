@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Amazing Race – Clue Detail</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="css/style.css" rel="stylesheet" />
+</head>
+
+<body>
+    <header>
+        <h1>🧭 Clue Detail</h1>
+        <div class="right">
+            <a href="clues.html">All Clues</a>
+            <span id="userEmail" class="muted"></span>
+            <button id="btnSignOut" class="hidden">Sign out</button>
+        </div>
+    </header>
+
+    <main>
+        <section class="panel">
+            <div class="row">
+                <h2 id="dTitle" style="margin:0;">…</h2>
+                <span id="dStatus" class="status">status</span>
+                <div class="spacer"></div>
+                <a id="dEdit" href="#">Edit</a>
+                <button id="dDelete" class="danger">Delete</button>
+            </div>
+            <div class="chips" style="margin:10px 0;">
+                <span id="dArea" class="chip">Area</span>
+                <span id="dDiff" class="chip">Difficulty</span>
+            </div>
+            <article id="dText" style="white-space:pre-wrap;"></article>
+            <p class="muted" id="dMeta"></p>
+            <p><a href="clues.html">← Back to list</a></p>
+        </section>
+    </main>
+
+    <div class="toast hidden"></div>
+
+    <script type="module" src="js/clue-detail.js"></script>
+</body>
+
+</html>

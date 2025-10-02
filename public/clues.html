@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Amazing Race – Clues</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="css/style.css" rel="stylesheet" />
+</head>
+
+<body>
+    <header>
+        <h1>🧭 Clues</h1>
+        <div class="right">
+            <a href="clue-edit.html">+ New Clue</a>
+            <span id="userEmail" class="muted"></span>
+            <button id="btnSignOut" class="hidden">Sign out</button>
+        </div>
+    </header>
+
+    <main>
+        <section class="panel">
+            <div class="toolbar">
+                <input id="qSearch" placeholder="Search title…" />
+                <select id="fStatus">
+          <option value="">Status: All</option>
+          <option value="published">Published</option>
+          <option value="draft">Draft</option>
+        </select>
+                <select id="fArea">
+          <option value="">Area: All</option>
+        </select>
+                <div class="spacer"></div>
+                <span id="count" class="muted"></span>
+            </div>
+            <div style="overflow:auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Area</th>
+                            <th>Status</th>
+                            <th>Difficulty</th>
+                            <th>Updated</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <div class="toast hidden"></div>
+
+    <script type="module" src="js/clues-list.js"></script>
+</body>
+
+</html>

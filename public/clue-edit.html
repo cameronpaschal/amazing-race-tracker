@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Amazing Race – Edit Clue</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="css/style.css" rel="stylesheet" />
+</head>
+
+<body>
+    <header>
+        <h1>🧭 Edit Clue</h1>
+        <div class="right">
+            <a href="clues.html">All Clues</a>
+            <span id="userEmail" class="muted"></span>
+            <button id="btnSignOut" class="hidden">Sign out</button>
+        </div>
+    </header>
+
+    <main>
+        <section class="panel">
+            <div class="row">
+                <h2 id="eHeading" style="margin:0;">New Clue</h2>
+                <div class="spacer"></div>
+                <button id="eSave" class="primary">Save</button>
+            </div>
+            <form id="editForm">
+                <div class="grid">
+                    <div>
+                        <label>Title *</label>
+                        <input id="eTitle" type="text" required />
+                    </div>
+                    <div>
+                        <label>Area *</label>
+                        <input id="eArea" type="text" required />
+                    </div>
+                </div>
+                <div class="grid">
+                    <div>
+                        <label>Status *</label>
+                        <select id="eStatus">
+              <option value="draft">Draft</option>
+              <option value="published">Published</option>
+            </select>
+                    </div>
+                    <div>
+                        <label>Difficulty (1–5) *</label>
+                        <select id="eDiff">
+              <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+            </select>
+                    </div>
+                </div>
+                <div>
+                    <label>Contestant-facing text *</label>
+                    <textarea id="eText" placeholder="Write the clue contestants will read…"></textarea>
+                </div>
+                <input id="eId" type="hidden" />
+            </form>
+            <div class="row">
+                <button id="eDelete" class="danger hidden">Delete</button>
+                <span class="spacer"></span>
+                <span id="eErr" class="muted"></span>
+            </div>
+            <p><a href="clues.html">← Cancel</a></p>
+        </section>
+    </main>
+
+    <div class="toast hidden"></div>
+
+    <script type="module" src="js/clue-edit.js"></script>
+</body>
+
+</html>
