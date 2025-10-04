@@ -1,11 +1,10 @@
-// js/auth.js
 import { $, toast, auth, signInWithEmailAndPassword } from "./app.js";
 
 const form = $("#loginForm");
 const email = $("#loginEmail");
 const pw = $("#loginPassword");
 const err = $("#loginErr");
-
+// login form
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   err.textContent = "";

@@ -1,42 +1,50 @@
 <!doctype html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="utf-8" />
-    <title>Amazing Race – Login</title>
+    <title>Amazing Race Login</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link href="css/style.css" rel="stylesheet" />
-</head>
+  </head>
 
-<body>
+  <body>
     <header>
-        <h1>🧭 Amazing Race — Admin Login</h1>
-        <div class="right"><span id="userEmail" class="muted"></span></div>
+      <h1>🧭 Amazing Race — Admin Login</h1>
+      <div class="right"><span id="userEmail" class="muted"></span></div>
     </header>
 
     <main>
-        <section class="panel" style="max-width:520px;">
-            <h2>Sign In</h2>
-            <form id="loginForm" class="grid" style="grid-template-columns:1fr;">
-                <div>
-                    <label>Email</label>
-                    <input id="loginEmail" type="text" autocomplete="username" required />
-                </div>
-                <div>
-                    <label>Password</label>
-                    <input id="loginPassword" type="password" autocomplete="current-password" required />
-                </div>
-                <div class="row">
-                    <button class="primary" type="submit">Sign in</button>
-                    <span id="loginErr" class="muted"></span>
-                </div>
-            </form>
-        </section>
+      <section class="panel" style="max-width: 520px">
+        <h2>Sign In</h2>
+        <form id="loginForm" class="grid" style="grid-template-columns: 1fr">
+          <div>
+            <label>Email</label>
+            <input
+              id="loginEmail"
+              type="text"
+              autocomplete="username"
+              required
+            />
+          </div>
+          <div>
+            <label>Password</label>
+            <input
+              id="loginPassword"
+              type="password"
+              autocomplete="current-password"
+              required
+            />
+          </div>
+          <div class="row">
+            <button class="primary" type="submit">Sign in</button>
+            <span id="loginErr" class="muted"></span>
+          </div>
+        </form>
+      </section>
     </main>
 
     <div class="toast hidden"></div>
 
     <script type="module" src="js/auth.js"></script>
-</body>
-
+  </body>
 </html>

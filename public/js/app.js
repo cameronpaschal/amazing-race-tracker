@@ -1,5 +1,3 @@
-// js/app.js
-// Firebase v10+ via CDN modules
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getAuth,
@@ -22,7 +20,6 @@ import {
   serverTimestamp,
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-// ---- Replace with your project values ----
 const firebaseConfig = {
   apiKey: "AIzaSyBMtKohcmAMQdS8knsiAXTPnL60f1-Gu5I",
   authDomain: "amazingrace-dba125.firebaseapp.com",
@@ -36,7 +33,6 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// Shared UI helpers
 export const $ = (sel) => document.querySelector(sel);
 export const $$ = (sel) => Array.from(document.querySelectorAll(sel));
 export const fmtDate = (ts) => (ts?.toDate ? ts.toDate().toLocaleString() : "");
@@ -51,6 +47,8 @@ export const toast = (msg, ms = 2200) => {
   t.classList.remove("hidden");
   setTimeout(() => t.classList.add("hidden"), ms);
 };
+
+//allows you to use these characters in the clues.
 export const escapeHtml = (s = "") =>
   s.replace(
     /[&<>"']/g,
@@ -64,7 +62,7 @@ export const escapeHtml = (s = "") =>
       })[m]
   );
 
-// Simple auth guard used per page
+//set's up the login page
 export function requireAuth(onReady) {
   onAuthStateChanged(auth, (user) => {
     const emailEl = $("#userEmail");
@@ -78,7 +76,7 @@ export function requireAuth(onReady) {
       signOutBtn.classList.toggle("hidden", !user);
     }
     if (!user) {
-      // If not on login page, send them there
+      //redirect if necessary
       if (!location.pathname.endsWith("login.html"))
         location.href = "login.html";
       return;
@@ -87,7 +85,7 @@ export function requireAuth(onReady) {
   });
 }
 
-// Expose Firebase bits needed by other modules
+// allows other files to access needed functionality
 export {
   auth,
   signInWithEmailAndPassword,

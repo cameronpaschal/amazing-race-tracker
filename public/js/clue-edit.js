@@ -1,4 +1,3 @@
-// js/clue-edit.js
 import {
   $,
   toast,
@@ -36,7 +35,6 @@ requireAuth(async () => {
     resetEditor();
   }
 
-  // Prevent duplicate listeners if this callback can run more than once
   if (!listenersBound) {
     eSave.addEventListener("click", onSave);
     eDelete.addEventListener("click", onDelete);
@@ -50,7 +48,7 @@ function resetEditor() {
   eTitle.value = "";
   eArea.value = "";
   eStatus.value = "draft";
-  eDiff.value = "1"; // default difficulty as string; parsed on save
+  eDiff.value = "1";
   eText.value = "";
   eErr.textContent = "";
   eDelete.classList.add("hidden");
@@ -70,7 +68,7 @@ async function loadEditor(id) {
   eTitle.value = c.title ?? "";
   eArea.value = c.areaId ?? "";
   eStatus.value = c.statusx ?? "draft";
-  eDiff.value = String(c.difficulty ?? 1); // <-- fixed: read, don’t assign
+  eDiff.value = String(c.difficulty ?? 1);
   eText.value = c.text ?? "";
   eDelete.classList.remove("hidden");
 }
@@ -96,7 +94,7 @@ async function onSave() {
     status,
     difficulty,
     updatedAt: serverTimestamp(),
-    updatedBy: auth.currentUser?.uid ?? null, // safer access
+    updatedBy: auth.currentUser?.uid ?? null,
   };
 
   try {
@@ -108,14 +106,14 @@ async function onSave() {
       const ref = await addDoc(collection(db, "clues"), {
         ...payload,
         createdAt: serverTimestamp(),
-        createdBy: auth.currentUser?.uid ?? null, // safer access
+        createdBy: auth.currentUser?.uid ?? null,
       });
       toast("Created");
       location.href = `clue-detail.html?id=${encodeURIComponent(ref.id)}`;
     }
   } catch (ex) {
     console.error(ex);
-    eErr.textContent = "Save failed."; // <-- fixed: don’t clobber ex.message
+    eErr.textContent = "Save failed.";
   }
 }
 
