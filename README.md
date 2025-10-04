@@ -29,6 +29,9 @@ I found these websites useful in developing this software:
 
 * https://firebase.google.com/docs
 * https://chatgpt.com
+* https://www.w3schools.com/js/default.asp
+* https://www.w3schools.com/html/default.asp
+* https://www.w3schools.com/css/default.asp
 
 ## Future Work
 
